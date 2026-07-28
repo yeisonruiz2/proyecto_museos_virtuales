@@ -14,18 +14,50 @@
   <body class="bg-slate-900 text-slate-100 min-h-screen font-sans">
     <!-- Encabezado -->
 
-    <header class="bg-slate-900 text-center p-8 border-b border-blue-500">
-      <h1 class="text-5xl font-extrabold text-blue-500 uppercase pb-6">
-        Metropolitan Museum API
-      </h1>
+    <header
+  class="text-center border-b border-blue-500 bg-cover bg-center"
+  style="background-image: url('imagenes/Museo_del_prado.jpg');"
+>
+  <div class="bg-black/60 p-8">
 
-      <button
-        id="btnCargar"
-        class="bg-blue-600 hover:bg-blue-800 text-white font-bold py-3 px-8 rounded-lg text-lg cursor-pointer transition"
-      >
-        Iniciar Escaneo
-      </button>
-    </header>
+    <h1 class="text-5xl font-extrabold text-blue-500 uppercase pb-6">
+      Metropolitan Museum API
+    </h1>
+
+    <button
+      id="btnCargar"
+      class="bg-blue-600 hover:bg-blue-800 text-white font-bold py-3 px-8 rounded-lg text-lg cursor-pointer transition"
+    >
+      Cargar Obras
+    </button>
+
+    <button
+      id="btnModoOscuro"
+      class="bg-amber-700 hover:bg-amber-800 text-white font-bold py-3 px-8 rounded-lg text-lg cursor-pointer transition"
+    >
+      🌙 Modo Oscuro
+    </button>
+
+    <button
+      id="btnFavoritos"
+      class="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-8 rounded-lg text-lg cursor-pointer transition"
+    >
+      ❤️ Ver Favoritos
+    </button>
+
+    <br><br>
+
+    <input
+      type="text"
+      id="txtBuscar"
+      placeholder="Buscar por título o artista..."
+      class="w-80 px-4 py-2 rounded-lg border border-blue-500 text-black"
+    />
+
+  </div>
+</header>
+
+    </div>
 
     <!-- Contenedor de tarjetas -->
 

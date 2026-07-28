@@ -2,7 +2,18 @@
 
 const btnCargar = document.getElementById("btnCargar");
 
+const btnFavoritos = document.getElementById("btnFavoritos");
+
 const contenedor = document.getElementById("museo-contenedor");
+
+const btnModoOscuro = document.getElementById("btnModoOscuro");
+
+const txtBuscar = document.getElementById("txtBuscar");
+
+// FAVORITOS
+
+// Cargar favoritos guardados
+let favoritos = JSON.parse(localStorage.getItem("favoritos")) || [];
 
 // FUNCIÓN PARA OBTENER LAS OBRAS
 
@@ -35,9 +46,9 @@ async function obtenerMuseo() {
 
     const datos = await respuesta.json();
 
-    //obtener solamente los primeros 58 IDs
+    //obtener solamente los primeros 70 IDs
 
-    const listaObras = datos.objectIDs.slice(0, 58);
+    const listaObras = datos.objectIDs.slice(0, 70);
 
     //limpiar contenedor
 
@@ -69,7 +80,9 @@ async function obtenerMuseo() {
       const tarjeta = document.createElement("div");
 
       tarjeta.className =
-        "bg-slate-800 border border-blue-600 rounded-lg p-4 text-center shadow-lg";
+        "bg-amber-900 border border-yellow-600 rounded-lg p-4 text-center shadow-lg";
+
+      tarjeta.classList.add("tarjetaMuseo");
 
       //crear imagen
 
@@ -80,13 +93,13 @@ async function obtenerMuseo() {
       imagen.alt = obra.title;
 
       imagen.className =
-        "w-40 h-40 mx-auto object-cover rounded cursor-pointer hover:scale-110 transition";
+        "w-40 h-40 mx-auto object-cover rounded cursor-pointer hover:scale-110 transition brightness-90 contrast-110 saturate-125";
 
       //crear número
 
       const numero = document.createElement("span");
 
-      numero.className = "text-xs font-bold text-white block mt-3";
+      numero.className = "text-xs font-bold block mt-3";
 
       numero.textContent = "#" + obra.objectID;
 
@@ -94,7 +107,7 @@ async function obtenerMuseo() {
 
       const titulo = document.createElement("h2");
 
-      titulo.className = "text-lg font-bold text-white mt-2";
+      titulo.className = "text-lg font-bold mt-2";
 
       titulo.textContent = obra.title;
 
@@ -106,6 +119,35 @@ async function obtenerMuseo() {
 
       artista.textContent = obra.artistDisplayName || "Artista desconocido";
 
+      // Guardar datos para la búsqueda
+
+      tarjeta.dataset.titulo = obra.title.toLowerCase();
+
+      tarjeta.dataset.artista = (obra.artistDisplayName || "").toLowerCase();
+
+      // Crear botón Favorito
+
+      const btnFavorito = document.createElement("button");
+
+      btnFavorito.className =
+        "bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded mt-3";
+
+      btnFavorito.textContent = "❤️ Favorito";
+
+      btnFavorito.addEventListener("click", () => {
+        // Verificar si la obra ya está en favoritos
+
+        if (!favoritos.includes(obra.objectID)) {
+          favoritos.push(obra.objectID);
+
+          localStorage.setItem("favoritos", JSON.stringify(favoritos));
+
+          alert("Obra agregada a favoritos");
+        } else {
+          alert("Esta obra ya está en favoritos");
+        }
+      });
+
       //agregar elementos
 
       tarjeta.appendChild(imagen);
@@ -115,6 +157,8 @@ async function obtenerMuseo() {
       tarjeta.appendChild(titulo);
 
       tarjeta.appendChild(artista);
+
+      tarjeta.appendChild(btnFavorito);
 
       //evento click en imagen
 
@@ -249,6 +293,48 @@ modal.addEventListener("click", (e) => {
   }
 });
 
+// MODO OSCURO
+
+btnModoOscuro.addEventListener("click", () => {
+  document.body.classList.toggle("bg-white");
+  document.body.classList.toggle("text-black");
+
+  document.body.classList.toggle("bg-slate-900");
+  document.body.classList.toggle("text-slate-100");
+
+  if (document.body.classList.contains("bg-slate-900")) {
+    localStorage.setItem("modo", "oscuro");
+  } else {
+    localStorage.setItem("modo", "claro");
+  }
+});
+
 // EVENTO BOTÓN CARGAR
 
 btnCargar.addEventListener("click", obtenerMuseo);
+
+// BÚSQUEDA LOCAL
+
+txtBuscar.addEventListener("keyup", () => {
+  const texto = txtBuscar.value.toLowerCase();
+
+  const tarjetas = document.querySelectorAll(".tarjetaMuseo");
+
+  tarjetas.forEach((tarjeta) => {
+    const titulo = tarjeta.dataset.titulo;
+
+    const artista = tarjeta.dataset.artista;
+
+    if (titulo.includes(texto) || artista.includes(texto)) {
+      tarjeta.style.display = "block";
+    } else {
+      tarjeta.style.display = "none";
+    }
+  });
+});
+
+// EVENTO BOTÓN FAVORITOS
+
+btnFavoritos.addEventListener("click", () => {
+  alert("Tienes " + favoritos.length + " obra(s) en favoritos.");
+});
