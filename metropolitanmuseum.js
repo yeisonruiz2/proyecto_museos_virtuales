@@ -185,6 +185,109 @@ async function obtenerMuseo() {
   }
 }
 
+// MOSTRAR FAVORITOS
+
+async function mostrarFavoritos() {
+  // Limpiar el contenedor
+  contenedor.innerHTML = "";
+
+  // Si no hay favoritos
+  if (favoritos.length === 0) {
+    contenedor.innerHTML = `
+      <p class="text-center text-red-500 text-2xl font-bold">
+        No tienes obras favoritas.
+      </p>
+    `;
+    return;
+  }
+
+  // Recorrer favoritos
+  for (let i = 0; i < favoritos.length; i++) {
+    const id = favoritos[i];
+
+    const respuesta = await fetch(
+      `https://collectionapi.metmuseum.org/public/collection/v1/objects/${id}`,
+    );
+
+    const obra = await respuesta.json();
+
+    // Crear tarjeta
+
+    const tarjeta = document.createElement("div");
+
+    tarjeta.className =
+      "bg-amber-900 border border-yellow-600 rounded-lg p-4 text-center shadow-lg";
+
+    tarjeta.classList.add("tarjetaMuseo");
+
+    // Crear imagen
+
+    const imagen = document.createElement("img");
+
+    imagen.src = obra.primaryImageSmall;
+
+    imagen.alt = obra.title;
+
+    imagen.className =
+      "w-40 h-40 mx-auto object-cover rounded cursor-pointer hover:scale-110 transition brightness-90 contrast-110 saturate-125";
+
+    // Crear número
+
+    const numero = document.createElement("span");
+
+    numero.className = "text-xs font-bold block mt-3";
+
+    numero.textContent = "#" + obra.objectID;
+
+    // Crear título
+
+    const titulo = document.createElement("h2");
+
+    titulo.className = "text-lg font-bold mt-2";
+
+    titulo.textContent = obra.title;
+
+    // Crear artista
+
+    const artista = document.createElement("p");
+
+    artista.className = "text-yellow-400 text-sm";
+
+    artista.textContent = obra.artistDisplayName || "Artista desconocido";
+
+    // Botón Favorito
+
+    const btnFavorito = document.createElement("button");
+
+    btnFavorito.className =
+      "bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded mt-3";
+
+    btnFavorito.textContent = "❤️ Favorito";
+
+    // Agregar elementos
+
+    tarjeta.appendChild(imagen);
+
+    tarjeta.appendChild(numero);
+
+    tarjeta.appendChild(titulo);
+
+    tarjeta.appendChild(artista);
+
+    tarjeta.appendChild(btnFavorito);
+
+    // Abrir modal
+
+    imagen.addEventListener("click", () => {
+      mostrarDetalle(obra);
+    });
+
+    // Mostrar tarjeta
+
+    contenedor.appendChild(tarjeta);
+  }
+}
+
 // MOSTRAR MODAL
 
 function mostrarDetalle(obra) {
@@ -335,6 +438,4 @@ txtBuscar.addEventListener("keyup", () => {
 
 // EVENTO BOTÓN FAVORITOS
 
-btnFavoritos.addEventListener("click", () => {
-  alert("Tienes " + favoritos.length + " obra(s) en favoritos.");
-});
+btnFavoritos.addEventListener("click", mostrarFavoritos);
